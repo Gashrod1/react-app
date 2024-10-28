@@ -78,11 +78,3 @@ components/
 <img src ='/assets/images/screen_app/editform.png'>
 <img src ='/assets/images/screen_app/editform2.png'>
 <img src ='/assets/images/screen_app/login.png'>
-
-![Alt text](/assets/images/screen_app/form.png)
-![Alt text](/assets/images/screen_app/form2.png)
-![Alt text](/assets/images/screen_app/list.png)
-![Alt text](/assets/images/screen_app/filter.png)
-![Alt text](/assets/images/screen_app/editform.png)
-![Alt text](/assets/images/screen_app/editform2.png)
-![Alt text](/assets/images/screen_app/login.png)

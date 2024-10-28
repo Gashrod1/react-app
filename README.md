@@ -70,11 +70,12 @@ components/
 - Notifications : Rappels quotidiens pour encourager l'ajout de rêves.
 
 ## Screens du projet
-
-<img src ='/assets/images/screen_app/form.png'>
-<img src ='/assets/images/screen_app/form2.png'>
-<img src ='/assets/images/screen_app/List.png'>
-<img src ='/assets/images/screen_app/filter.png'>
-<img src ='/assets/images/screen_app/EditForm.png'>
-<img src ='/assets/images/screen_app/EditForm2.png'>
-<img src ='/assets/images/screen_app/Login.png'>
+<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+    <img src ='/assets/images/screen_app/form.png'>
+    <img src ='/assets/images/screen_app/form2.png'>
+    <img src ='/assets/images/screen_app/List.png'>
+    <img src ='/assets/images/screen_app/filter.png'>
+    <img src ='/assets/images/screen_app/EditForm.png'>
+    <img src ='/assets/images/screen_app/EditForm2.png'>
+    <img src ='/assets/images/screen_app/Login.png'>
+</div>

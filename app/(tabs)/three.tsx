@@ -1,13 +1,12 @@
 import { StyleSheet } from 'react-native';
 
 import LoginForm from '@/components/LoginForm'
-import { Text, View } from '@/components/Themed';
+import { View } from '@/components/Themed';
 
 
 export default function TabOneScreen() {
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>Se connecter</Text>
         <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
         <LoginForm/>
       </View>

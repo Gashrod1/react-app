@@ -1,59 +1,94 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, Dimensions, ScrollView, SafeAreaView, Text } from 'react-native';
-import { TextInput, Button, Chip, SegmentedButtons } from 'react-native-paper';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import Slider from '@react-native-community/slider';
+import React, { useState, useEffect } from 'react'
+import { View, StyleSheet, Dimensions, ScrollView, SafeAreaView, Text } from 'react-native'
+import { TextInput, Button, Chip, SegmentedButtons, Title } from 'react-native-paper'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import Slider from '@react-native-community/slider'
+import { useLocalSearchParams, useRouter } from 'expo-router'
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get('window')
 
 export default function DreamForm() {
-  const [dreamText, setDreamText] = useState('');
-  const [dateText, setDateText] = useState('');
-  const [beforeEmotionText, setBeforeEmotionText] = useState('');
-  const [afterEmotionText, setAfterEmotionText] = useState('');
-  const [dreamType, setDreamType] = useState('');
-  const [tagsText, setTagsText] = useState([]);
-  const [newTag, setNewTag] = useState('');
-  const [characters, setCharacters] = useState([]);
-  const [newCharacter, setNewCharacter] = useState('');
-  const [location, setLocation] = useState('');
-  const [emotionalIntensity, setEmotionalIntensity] = useState(5);
-  const [clarity, setClarity] = useState(5);
-  const [sleepQuality, setSleepQuality] = useState(5);
-  const [personalMeaning, setPersonalMeaning] = useState('');
-  const [overallTone, setOverallTone] = useState('neutral');
+  const { dream, index } = useLocalSearchParams()
+  const router = useRouter()
+
+  const [dreamText, setDreamText] = useState('')
+  const [dateText, setDateText] = useState('')
+  const [beforeEmotionText, setBeforeEmotionText] = useState('')
+  const [afterEmotionText, setAfterEmotionText] = useState('')
+  const [isLucide, setIsLucid] = useState('')
+  const [dreamType, setDreamType] = useState('')
+  const [tagsText, setTagsText] = useState([])
+  const [newTag, setNewTag] = useState('')
+  const [characters, setCharacters] = useState([])
+  const [newCharacter, setNewCharacter] = useState('')
+  const [location, setLocation] = useState('')
+  const [emotionalIntensity, setEmotionalIntensity] = useState(5)
+  const [clarity, setClarity] = useState(5)
+  const [sleepQuality, setSleepQuality] = useState(5)
+  const [personalMeaning, setPersonalMeaning] = useState('')
+  const [overallTone, setOverallTone] = useState('neutral')
+  const [isEditing, setIsEditing] = useState(false)
+  const [editingIndex, setEditingIndex] = useState(null)
+
+
+  useEffect(() => {
+    if (dream) {
+      const parsedDream = JSON.parse(dream)
+      setDreamText(parsedDream.dreamText || '')
+      setDateText(parsedDream.dateText || '')
+      setBeforeEmotionText(parsedDream.beforeEmotionText || '')
+      setAfterEmotionText(parsedDream.afterEmotionText || '')
+      setIsLucid(parsedDream.isLucide || '')
+      setDreamType(parsedDream.dreamType || '')
+      setTagsText(parsedDream.tagsText || [])
+      setCharacters(parsedDream.characters || [])
+      setLocation(parsedDream.location || '')
+      setEmotionalIntensity(parsedDream.emotionalIntensity || 5)
+      setClarity(parsedDream.clarity || 5)
+      setSleepQuality(parsedDream.sleepQuality || 5)
+      setPersonalMeaning(parsedDream.personalMeaning || '')
+      setOverallTone(parsedDream.overallTone || 'neutre')
+      setIsEditing(true)
+      setEditingIndex(index)
+    }
+  }, [dream, index])
 
   const addTag = () => {
     if (newTag.trim()) {
-      setTagsText([...tagsText, newTag.trim()]);
-      setNewTag('');
+      setTagsText([...tagsText, newTag.trim()])
+      setNewTag('')
     }
   };
 
   const removeTag = (tagToRemove) => {
-    setTagsText(tagsText.filter((tag) => tag !== tagToRemove));
+    setTagsText(tagsText.filter((tag) => tag !== tagToRemove))
   };
 
   const addCharacter = () => {
     if (newCharacter.trim()) {
-      setCharacters([...characters, newCharacter.trim()]);
-      setNewCharacter('');
+      setCharacters([...characters, newCharacter.trim()])
+      setNewCharacter('')
     }
   };
 
   const removeCharacter = (characterToRemove) => {
-    setCharacters(characters.filter((character) => character !== characterToRemove));
-  };
+    setCharacters(characters.filter((character) => character !== characterToRemove))
+  }
 
   const handleDreamSubmission = async () => {
+    if (!dreamText.trim() || !dateText.trim()) {
+      alert("Veuillez remplir tous les champs obligatoires !")
+    }
+    
     try {
-      const existingData = await AsyncStorage.getItem('dreamFormDataArray');
-      const formDataArray = existingData ? JSON.parse(existingData) : [];
-      formDataArray.push({
+      const existingData = await AsyncStorage.getItem('dreamFormDataArray')
+      const formDataArray = existingData ? JSON.parse(existingData) : []
+      const updatedDreams = {
         dreamText,
         dateText,
         beforeEmotionText,
         afterEmotionText,
+        isLucide,
         dreamType,
         tagsText,
         characters,
@@ -63,28 +98,49 @@ export default function DreamForm() {
         sleepQuality,
         personalMeaning,
         overallTone,
-      });
-      await AsyncStorage.setItem('dreamFormDataArray', JSON.stringify(formDataArray));
+      }
+
+      if (isEditing) {
+        formDataArray[editingIndex] = updatedDreams
+      } else {
+        formDataArray.push(updatedDreams)
+      }
+
+      await AsyncStorage.setItem('dreamFormDataArray', JSON.stringify(formDataArray))
+      
+      if (isEditing) {
+        setIsEditing(false)
+        router.push('/(tabs)/two')
+      } else {
+        router.back()
+      }
+
     } catch (error) {
-      console.error('Erreur lors de la sauvegarde des données:', error);
+      console.error('Erreur lors de la sauvegarde des données:', error)
     }
-    setDreamText('');
-    setDateText('');
-    setBeforeEmotionText('');
-    setAfterEmotionText('');
-    setDreamType('');
-    setTagsText([]);
-    setCharacters([]);
-    setLocation('');
-    setEmotionalIntensity(5);
-    setClarity(5);
-    setSleepQuality(5);
-    setPersonalMeaning('');
-    setOverallTone('neutral');
-  };
+    resetForm()
+  }
+
+  const resetForm = () => {
+    setDreamText('')
+    setDateText('')
+    setBeforeEmotionText('')
+    setAfterEmotionText('')
+    setDreamType('')
+    setIsLucid('')
+    setTagsText([])
+    setCharacters([])
+    setLocation('')
+    setEmotionalIntensity(5)
+    setClarity(5)
+    setSleepQuality(5)
+    setPersonalMeaning('')
+    setOverallTone('neutre')
+  }
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      <Title style={styles.title}>{isEditing ? 'Modifier un rêve' : 'Ajouter un rêve'}</Title>
       <TextInput
         label="Rêve"
         value={dreamText}
@@ -201,12 +257,21 @@ export default function DreamForm() {
       </View>
       <SafeAreaView style={styles.segmented}>
         <SegmentedButtons
+          value={isLucide}
+          onValueChange={setIsLucid}
+          buttons={[
+            { value: 'Rêve normal', label: 'Rêve normal' },
+            { value: 'Rêve lucide', label: 'Rêve lucide' },
+          ]}
+        />
+      </SafeAreaView>
+      <SafeAreaView style={styles.segmented}>
+        <SegmentedButtons
           value={dreamType}
           onValueChange={setDreamType}
           buttons={[
-            { value: 'normal', label: 'Rêve normal' },
-            { value: 'lucide', label: 'Rêve lucide' },
-            { value: 'cauchemar', label: 'Cauchemar' },
+            { value: 'Rêve', label: 'Rêve' },
+            { value: 'Cauchemar', label: 'Cauchemar' },
           ]}
         />
       </SafeAreaView>
@@ -216,13 +281,13 @@ export default function DreamForm() {
           onValueChange={setOverallTone}
           buttons={[
             { value: 'positive', label: 'Positif' },
-            { value: 'neutral', label: 'Neutre' },
+            { value: 'neutre', label: 'Neutre' },
             { value: 'negative', label: 'Négatif' },
           ]}
         />
       </SafeAreaView>
       <Button mode="contained" onPress={handleDreamSubmission} style={styles.button}>
-        Soumettre
+        {isEditing ? 'Modifier le rêve' : 'Ajouter le rêve'}
       </Button>
       <Button mode="contained" onPress={() => AsyncStorage.clear()} style={styles.button}>
         Clear Async Storage
@@ -232,6 +297,12 @@ export default function DreamForm() {
 }
 
 const styles = StyleSheet.create({
+  title: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
   container: {
     padding: 16,
   },
@@ -278,4 +349,4 @@ const styles = StyleSheet.create({
   button: {
     marginTop: 16,
   },
-});
+})

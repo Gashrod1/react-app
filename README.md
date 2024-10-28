@@ -73,8 +73,8 @@ components/
 
 <img src ='/assets/images/screen_app/form.png'>
 <img src ='/assets/images/screen_app/form2.png'>
-<img src ='/assets/images/screen_app/list.png'>
+<img src ='/assets/images/screen_app/List.png'>
 <img src ='/assets/images/screen_app/filter.png'>
-<img src ='/assets/images/screen_app/editform.png'>
-<img src ='/assets/images/screen_app/editform2.png'>
-<img src ='/assets/images/screen_app/login.png'>
+<img src ='/assets/images/screen_app/EditForm.png'>
+<img src ='/assets/images/screen_app/EditForm2.png'>
+<img src ='/assets/images/screen_app/Login.png'>

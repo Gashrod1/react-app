@@ -42,7 +42,7 @@
 
 ```bash
 git clone https://github.com/Gashrod1/react-app.git
-cd DreamListApp
+cd react-app
 ```
 2. Installation des dépendances :
 
